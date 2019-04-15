@@ -3,6 +3,8 @@ package com.projects.sjccrr.entryrobot;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.graphics.Point;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.AppCompatActivity;
 
 import android.os.Bundle;
@@ -17,13 +19,10 @@ import android.view.WindowManager;
 public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
 
     private Point mSize; // storing screen size dimensions
-    float x1, x2, y1, y2;
-
-
-    // Declare recycler view
-    RecyclerViewAdapter adapter;
-    RecyclerView recyclerView;
-//    private boolean isFragmentDisplayed = false;
+    float x1, x2, y1, y2; // define co-ordinates for swiping animations...
+    RecyclerViewAdapter adapter; // Declare recycler view adapter
+    RecyclerView recyclerView;  // declare recycler view
+    private boolean isFragmentDisplayed = false;
 
 
     @Override
@@ -31,8 +30,8 @@ public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemC
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT);
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN); // Hide the status bar
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_PORTRAIT); // Remove ability to rotate the screen horizontal
 
         // data to populate the RecyclerView with
         String data[] = new String[20]; // TODO: Change the values for data
@@ -67,11 +66,12 @@ public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemC
     @Override
     public void onItemClick(View view, int position) {
         Log.d("CLICKTAG", "You chose " + position);
-//        Log.i("TAG", "You clicked number " + adapter.getItem(position) + ", which is at cell position " + position);
-//        if (isFragmentDisplayed) {
-//            closeFragment();
-//        }
-//        displayFragment(adapter.getItem(position), false);
+        if (isFragmentDisplayed) {
+            closeFragment();
+        }
+        if (position == 0) {
+            displayFragment();
+        }
 
     }
 
@@ -85,13 +85,54 @@ public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemC
             case MotionEvent.ACTION_UP:
                 x2 = touchevent.getX();
                 y2 = touchevent.getY();
-                if(y2 < (y1 + 50) ) {
+                if(y1 < (y2 + 50) ) {
                     Intent intent = new Intent(this, EntryMain.class);
                     startActivity(intent);
+                    this.overridePendingTransition(R.anim.slide_in_bottom,
+                            R.anim.slide_out_top);
+
                 }
                 break;
         }
         return false;
+    }
+
+
+    public void displayFragment() {
+        BluetoothFrag bluFrag = BluetoothFrag.newInstance();
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        FragmentTransaction fragmentTransaction = fragmentManager
+                .beginTransaction();
+
+        fragmentTransaction.add(R.id.blutooth_frag, bluFrag).addToBackStack(null).commit();
+
+        // Set boolean flag to indicate fragment is open.
+        isFragmentDisplayed = true;
+    }
+
+
+    /**
+     * Closes the VidGalFragment, i.e. the fragment which contains the view to show the videos that have been recorded through the app.
+     * Changes a boolean "isFragmentDisplayed" to indicate the Fragment is closed.
+     */
+    public void closeFragment() {
+        // Get the FragmentManager.
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        // Check to see if the fragment is already showing.
+        BluetoothFrag bluFrag = (BluetoothFrag) fragmentManager
+                .findFragmentById(R.id.blutooth_frag);
+        if (bluFrag != null) {
+            // Create and commit the transaction to remove the fragment.
+            FragmentTransaction fragmentTransaction =
+                    fragmentManager.beginTransaction();
+            fragmentTransaction.remove(bluFrag).commit();
+        }
+        // Set boolean flag to indicate fragment is closed.
+        isFragmentDisplayed = false;
+    }
+
+    public void onArticleSelected() {
+        closeFragment();
     }
 
 
