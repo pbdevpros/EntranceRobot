@@ -48,7 +48,7 @@ public class RecyclerViewAdapter extends RecyclerView.Adapter<RecyclerViewAdapte
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         Glide.with(mContext)
                 .applyDefaultRequestOptions(new RequestOptions()
-                        .placeholder(R.drawable.greybackground)) // image being used is: https://avatars3.githubusercontent.com/u/6271?s=400&v=4
+                        .placeholder(R.drawable.r2d2_mid)) // image being used is: https://avatars3.githubusercontent.com/u/6271?s=400&v=4
                 .asBitmap()
                 .load(mData[position])
                 .into(holder.myImageView);

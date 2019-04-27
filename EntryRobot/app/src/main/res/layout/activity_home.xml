@@ -24,4 +24,14 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
+    <FrameLayout
+        android:id="@+id/homeBlutooth_Frag"
+        android:name="com.projects.sjccrr.entryrobot.BluetoothFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/blutooth_frag">
+
+    </FrameLayout>
+
+
 </android.support.constraint.ConstraintLayout>
