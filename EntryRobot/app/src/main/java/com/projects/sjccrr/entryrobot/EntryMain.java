@@ -13,6 +13,19 @@ import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
+import android.widget.Toast;
+
+import java.io.BufferedInputStream;
+import java.io.BufferedReader;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import javax.net.ssl.HttpsURLConnection;
 
 public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClickOKtoClose  {
 
@@ -20,6 +33,13 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
     static boolean isFragmentDisplayed = false;
     public Button enterButton;
     Animation animation;
+
+    public enum ERROR_CODE {
+        OK,
+        WARNING,
+        ERROR
+    }
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -65,13 +85,13 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
             animation.setFillEnabled(true);
             animation.setFillAfter(true); // lock view (the button) in place after animation - looks for smooth
             enterButton.startAnimation(animation); // start the animation with for the main enter button
+            String address = "http://192.168.0.4:8000"; // TODO: Edit the address of the endpoint!
             if (isFragmentDisplayed) {
                 closeFragment();
             } else {
                 displayFragment();
+                new SendHTTPRequestInBackground().execute(address);
             }
-//            AsyncTaskRunner runner = new AsyncTaskRunner();
-//            runner.execute(enterButton, animation);
         }
     };
 
@@ -116,36 +136,76 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
     }
 
 
+    /**
+     *  HTTP Connection
+     *  This section is for handling connection requests in order to connect with a local server
+     *  Application expects the user to configure the WiFi connection such that the device
+     *  can be connected to on the LAN.
+     *
+     *  Nested class which inherits from AysncTask in order to run networking operation
+     *  on background thread
+     */
+
+    class SendHTTPRequestInBackground extends AsyncTask<String , Void ,String> {
+        String server_response;
+
+        @Override
+        protected String doInBackground(String... strings) {
+            Boolean success = SendHTTPRequest(strings[0]);
+            if (success) {
+                return "successful!";
+            }
+            return "unsuccessful.";
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            super.onPostExecute(s);
+            Log.e("Response", "" + server_response);
+            Toast.makeText(getApplicationContext(), "Request was " + s, Toast.LENGTH_SHORT).show();
+        }
+
+        /**
+         * Send a http request to a endpoint specified by the input.
+         * @param domain
+         * @return
+         */
+        public boolean SendHTTPRequest(String domain) {
+            HttpURLConnection urlConnection = null;
+            // Read the input stream
+            try {
+                URL url = new URL(domain);
+                urlConnection = (HttpURLConnection) url.openConnection();
+                InputStream in = new BufferedInputStream(urlConnection.getInputStream());
+                readStream(in);
+            } catch (IOException e) {
+                Log.e("HTTP", "Error! Could not reach endpoint!");
+            } finally {
+                if ( urlConnection != null ) {
+                    urlConnection.disconnect();
+                } else {
+                    return false;
+                }
+            }
+            return true;
+        }
+
+        private String readStream(InputStream is) {
+            try {
+                ByteArrayOutputStream bo = new ByteArrayOutputStream();
+                int i = is.read();
+                while(i != -1) {
+                    bo.write(i);
+                    i = is.read();
+                }
+                return bo.toString();
+            } catch (IOException e) {
+                return "Error!";
+            }
+        }
+    }
+
+
 }
 
-/**
- * Asyc task
- * @brief Run an animation in the background
- */
-//
-//private class AsyncTaskRunner extends AsyncTask<Button, Animation, String> {
-//
-//    @Override
-//    protected String doInBackground(Button myButton, Animation myAnimation) {
-//        myButton.startAnimation(myAnimation);
-//    }
-//
-//
-//    @Override
-//    protected void onPostExecute() {
-//        Log.d("AsyncAnimate", "Finished animation");
-//    }
-//
-//
-//    @Override
-//    protected void onPreExecute() {
-//        Log.d("AsyncAnimate", "Starting animation");
-//    }
-//
-//
-//    @Override
-//    protected void onProgressUpdate() {
-//
-//    }
-//}
 
