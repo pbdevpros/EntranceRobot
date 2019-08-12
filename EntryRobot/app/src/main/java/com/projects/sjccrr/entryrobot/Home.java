@@ -16,7 +16,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.WindowManager;
 
-public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener {
+public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemClickListener, BluetoothFrag.OnClickOKtoClose {
 
     private Point mSize; // storing screen size dimensions
     float x1, x2, y1, y2; // define co-ordinates for swiping animations...
@@ -100,12 +100,13 @@ public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemC
 
     public void displayFragment() {
         BluetoothFrag bluFrag = BluetoothFrag.newInstance();
+        Log.d("blufrag", "creating the fragment...");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager
                 .beginTransaction();
 
-        fragmentTransaction.add(R.id.blutooth_frag, bluFrag).addToBackStack(null).commit();
-
+        fragmentTransaction.add(R.id.homeBlutooth_Frag, bluFrag).addToBackStack(null).commit();
+        Log.d("blufrag", "fragment created.");
         // Set boolean flag to indicate fragment is open.
         isFragmentDisplayed = true;
     }
@@ -117,10 +118,11 @@ public class Home extends AppCompatActivity implements RecyclerViewAdapter.ItemC
      */
     public void closeFragment() {
         // Get the FragmentManager.
+        Log.d("blufrag", "Closing the fragment");
         FragmentManager fragmentManager = getSupportFragmentManager();
         // Check to see if the fragment is already showing.
         BluetoothFrag bluFrag = (BluetoothFrag) fragmentManager
-                .findFragmentById(R.id.blutooth_frag);
+                .findFragmentById(R.id.homeBlutooth_Frag);
         if (bluFrag != null) {
             // Create and commit the transaction to remove the fragment.
             FragmentTransaction fragmentTransaction =

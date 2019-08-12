@@ -7,14 +7,25 @@
     android:background="@drawable/robot_home_large"
     tools:context=".EntryMain">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Enter"
+    <Button
+        android:id="@+id/entryButton"
+        android:layout_width="60dp"
+        android:layout_height="60dp"
+        android:background="@drawable/circle"
+        android:textStyle="bold"
+        android:text="ENTER"
+        android:textColor="@color/colorOffWhite"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.888" />
+
+    <FrameLayout
+        android:id="@+id/entryBlutooth_Frag"
+        android:name="com.projects.sjccrr.entryrobot.BluetoothFrag"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout="@layout/blutooth_frag"/>
 
 </android.support.constraint.ConstraintLayout>
