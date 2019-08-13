@@ -1,6 +1,7 @@
 package com.projects.sjccrr.entryrobot;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -24,6 +25,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.Dictionary;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -39,6 +43,17 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
         WARNING,
         ERROR
     }
+
+
+    public enum FragmentType {                              // used for deciding which fragment to display
+        FRAG1,
+        FRAG2
+    }
+
+    private SharedPreferences userInfo;
+    private String UserNameKey = "username";
+    private String PasswordKey = "password";
+    private String defaultNA = "NA";
 
 
     @Override
@@ -85,27 +100,31 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
             animation.setFillEnabled(true);
             animation.setFillAfter(true); // lock view (the button) in place after animation - looks for smooth
             enterButton.startAnimation(animation); // start the animation with for the main enter button
-            String address = "http://192.168.0.4:8000"; // TODO: Edit the address of the endpoint!
+            String address = "http://null"; // TODO: Edit the address of the endpoint!
             if (isFragmentDisplayed) {
-                closeFragment();
+                closeFragment(FragmentType.FRAG1);
             } else {
-                displayFragment();
+                displayFragment(FragmentType.FRAG1);
                 new SendHTTPRequestInBackground().execute(address);
             }
         }
     };
 
 
-    public void displayFragment() {
-        BluetoothFrag bluFrag = BluetoothFrag.newInstance();
-        Log.d("blufrag", "creating the fragment...");
+    public void displayFragment(FragmentType type) {
+
+        Log.d("Fragment", "creating the fragment...");
         FragmentManager fragmentManager = getSupportFragmentManager();
         FragmentTransaction fragmentTransaction = fragmentManager
                 .beginTransaction();
 
-        fragmentTransaction.add(R.id.entryBlutooth_Frag, bluFrag).addToBackStack(null).commit();
-        Log.d("blufrag", "fragment created.");
+        if ( type == FragmentType.FRAG1 ) {
+            BluetoothFrag bluFrag = BluetoothFrag.newInstance();
+            fragmentTransaction.add(R.id.entryBlutooth_Frag, bluFrag).addToBackStack(null).commit();
+        }
+
         // Set boolean flag to indicate fragment is open.
+        Log.d("Fragment", "fragment created.");
         isFragmentDisplayed = true;
     }
 
@@ -114,25 +133,31 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
      * Closes the VidGalFragment, i.e. the fragment which contains the view to show the videos that have been recorded through the app.
      * Changes a boolean "isFragmentDisplayed" to indicate the Fragment is closed.
      */
-    public void closeFragment() {
+    public void closeFragment(FragmentType type) {
         // Get the FragmentManager.
         Log.d("blufrag", "Closing the fragment");
         FragmentManager fragmentManager = getSupportFragmentManager();
-        // Check to see if the fragment is already showing.
-        BluetoothFrag bluFrag = (BluetoothFrag) fragmentManager
-                .findFragmentById(R.id.entryBlutooth_Frag);
-        if (bluFrag != null) {
-            // Create and commit the transaction to remove the fragment.
-            FragmentTransaction fragmentTransaction =
-                    fragmentManager.beginTransaction();
-            fragmentTransaction.remove(bluFrag).commit();
+
+
+        if (type == FragmentType.FRAG1) {
+            // Check to see if the fragment is already showing.
+            BluetoothFrag bluFrag = (BluetoothFrag) fragmentManager
+                    .findFragmentById(R.id.entryBlutooth_Frag);
+            if (bluFrag != null) {
+                // Create and commit the transaction to remove the fragment.
+                FragmentTransaction fragmentTransaction =
+                        fragmentManager.beginTransaction();
+                fragmentTransaction.remove(bluFrag).commit();
+            }
         }
+
+
         // Set boolean flag to indicate fragment is closed.
         isFragmentDisplayed = false;
     }
 
     public void onArticleSelected() {
-        closeFragment();
+        closeFragment(FragmentType.FRAG1);
     }
 
 
@@ -205,6 +230,39 @@ public class EntryMain extends AppCompatActivity implements BluetoothFrag.OnClic
         }
     }
 
+
+    public Map<String, String> GetUserInfo() {
+        // read shared preferences
+        Map<String, String> userData = new HashMap<>();
+        userData = CheckUserInfo();
+        if ( userData.get(UserNameKey) == defaultNA || userData.get(PasswordKey) == defaultNA ) {
+            userData = AskUserForInfo();
+        }
+        return userData;
+    }
+
+
+    public Map<String, String> AskUserForInfo() {
+        Map<String, String> userData = new HashMap<>();
+        // placeholder
+        // A fragment should be displayed to ask the user for input
+
+        // When the user hits enter, their settings should be saved and then returned to this function.
+
+        // then return the data
+        return userData;
+    }
+
+
+
+    public Map<String, String> CheckUserInfo() {
+        userInfo = getSharedPreferences("UserInformation", MODE_PRIVATE);
+        String usr = userInfo.getString(UserNameKey,  defaultNA);
+        String pswd = userInfo.getString(PasswordKey, defaultNA);
+        Map<String, String> userData = new HashMap<>();
+        userData.put(usr, pswd);
+        return userData;
+    }
 
 }
 
