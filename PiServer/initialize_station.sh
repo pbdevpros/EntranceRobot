@@ -15,6 +15,8 @@
 echo "Copying launch daemon to /lib/systemd..."
 cp http_server.service /lib/systemd/system/
 sleep 2
+echo "Copying server scripts to /home/pi/"
+sudo cp httpserver.pi /home/pi/server.pi
 echo "Setting daemon to launch on boot..."
 sudo systemctl daemon-reload # this command actually needs to be run every time the .service file is changed
 sudo systemctl enable http_server.service
