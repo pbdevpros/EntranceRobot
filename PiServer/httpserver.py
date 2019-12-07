@@ -21,7 +21,6 @@ global COUNT
 COUNT = 0
 RESET_LIMIT = 100
 KEEP_RUNNING = True
-LOGPATH="/tmp/serverlog.log"
 
 class httpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_HEAD(s):
@@ -48,7 +47,6 @@ def keep_running():
 httpd = BaseHTTPServer.HTTPServer(("", 8000), httpHandler)
 
 while keep_running():
-	echo "Server is running $(date)" >> $LOGPATH
 	httpd.handle_request()
 	COUNT = COUNT + 1
 	print(COUNT)
@@ -63,7 +61,7 @@ while keep_running():
 
 
  # == PLACEHOLDER - THIS FUNCTION SHOULD BE IN MAIN - PUTTING HERE FOR TEST PURPOSES
- def testMainUNLOCK():
+def testMainUNLOCK():
 	# if header is "UNLOCK"
 	# An "UNLOCK" message can come from an app or other machine
 	# response = http.handlerequest_withAREsponse?
@@ -138,6 +136,7 @@ def PiServer_make_sure_security_key_is_valid(security_keys, received_value):
 
 def PiServer_push_message_to_client(message):
 	# placeholder
+	print('help')
 	# this will send back a response to the user indicating which variable passed was incorrect.
 	# This will take some work on the server side to send messages
 
