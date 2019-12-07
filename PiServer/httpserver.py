@@ -21,6 +21,7 @@ global COUNT
 COUNT = 0
 RESET_LIMIT = 100
 KEEP_RUNNING = True
+LOGPATH="/tmp/serverlog.log"
 
 class httpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_HEAD(s):
@@ -47,6 +48,7 @@ def keep_running():
 httpd = BaseHTTPServer.HTTPServer(("", 8000), httpHandler)
 
 while keep_running():
+	echo "Server is running $(date)" >> $LOGPATH
 	httpd.handle_request()
 	COUNT = COUNT + 1
 	print(COUNT)
