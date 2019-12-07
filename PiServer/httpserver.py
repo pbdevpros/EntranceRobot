@@ -43,7 +43,7 @@ class httpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			s.send_error(204)
 
 def keep_running():
-    return KEEP_RUNNING
+	return KEEP_RUNNING
 
 httpd = BaseHTTPServer.HTTPServer(("", 8000), httpHandler)
 
@@ -64,17 +64,17 @@ while keep_running():
 
  # == PLACEHOLDER - THIS FUNCTION SHOULD BE IN MAIN - PUTTING HERE FOR TEST PURPOSES
  def testMainUNLOCK():
- 	# if header is "UNLOCK"
- 	# An "UNLOCK" message can come from an app or other machine
- 	# response = http.handlerequest_withAREsponse?
- 	user_key = PiServer_read_message_from_client(response)
- 	security_keys = PiServer_load_signed_json_file("testJSON.json")
- 	answer = PiServer_make_sure_security_key_is_valid(security_keys, user_key)
- 	if answer == "NONE":
- 		print("User has been recognised! Unlocking the door!")
- 	else:
- 		PiServer_push_message_to_client(answer + " field(s) incorrect. Please try again.")
- 
+	# if header is "UNLOCK"
+	# An "UNLOCK" message can come from an app or other machine
+	# response = http.handlerequest_withAREsponse?
+	user_key = PiServer_read_message_from_client(response)
+	security_keys = PiServer_load_signed_json_file("testJSON.json")
+	answer = PiServer_make_sure_security_key_is_valid(security_keys, user_key)
+	if answer == "NONE":
+		print("User has been recognised! Unlocking the door!")
+	else:
+		PiServer_push_message_to_client(answer + " field(s) incorrect. Please try again.")
+
 # == PLACEHOLDER - THIS FUNCTION SHOULD BE IN MAIN - PUTTING HERE FOR TEST PURPOSES
 def testMainADDUSER():
 	# if header is "ADD USER"
