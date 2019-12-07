@@ -22,6 +22,8 @@ COUNT = 0
 RESET_LIMIT = 100
 KEEP_RUNNING = True
 
+logger = open('/tmp/server.log', 'w+')
+
 class httpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_HEAD(s):
 		s.send_response(200)
@@ -47,10 +49,14 @@ def keep_running():
 httpd = BaseHTTPServer.HTTPServer(("", 8000), httpHandler)
 
 while keep_running():
+	if COUNT == 0 or COUNT == 1:
+		logger.write('Server is running, it has been accessed %d times.\n' %(COUNT))
 	httpd.handle_request()
 	COUNT = COUNT + 1
 	print(COUNT)
-
+	if COUNT == 10:
+		logger.write('Closing server logs.')
+		logger.close()
 
 # =====================================================================================================================================================================
 #                                                                   Functionality to validate security keys
