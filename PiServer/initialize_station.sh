@@ -22,8 +22,11 @@ echo "Copying server scripts to /home/pi/"
 sudo cp server.py /home/pi/server.py
 echo "Setting daemon to launch on boot..."
 sudo systemctl daemon-reload # this command actually needs to be run every time the .service file is changed
+echo "[test] Starting server... ensure some debug logs from server are seen.... if not cancel."
+sudo systemctl start http_server
 sudo systemctl enable http_server
-sleep 2
+sudo journalctl -u http_server.service 
+sleep 5
 
 echo "Rebooting system, please hit Ctrl + C to exit script. NB: RPi will need to be rebooted to verify the launch service will run on boot..."
 for i in 5 4 3 2 1
