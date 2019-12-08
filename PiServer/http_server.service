@@ -1,13 +1,15 @@
 [Unit]
 Description=Launch HTTP server
-After=network.target
+Wants=network-online.target
+After=network.target network-online.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/server.py
+ExecStart=/usr/bin/python /home/pi/server.py
 Restart=always
-RestartSec=10s
+Type=simple
+RestartSec=10
 KillMode=process
 TimeoutSec=infinity
 
 [Install]
-WantedBy=networking.target
+WantedBy=multi-user.target

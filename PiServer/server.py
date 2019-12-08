@@ -22,6 +22,8 @@ COUNT = 0
 RESET_LIMIT = 100
 KEEP_RUNNING = True
 
+logger = open('/tmp/server.log', 'w+')
+
 class httpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 	def do_HEAD(s):
 		s.send_response(200)
@@ -42,15 +44,19 @@ class httpHandler(BaseHTTPServer.BaseHTTPRequestHandler):
 			s.send_error(204)
 
 def keep_running():
-    return KEEP_RUNNING
+	return KEEP_RUNNING
 
 httpd = BaseHTTPServer.HTTPServer(("", 8000), httpHandler)
 
 while keep_running():
+	if COUNT == 0 or COUNT == 1:
+		logger.write('Server is running, it has been accessed %d times.\n' %(COUNT))
 	httpd.handle_request()
 	COUNT = COUNT + 1
 	print(COUNT)
-
+	if COUNT == 10:
+		logger.write('Closing server logs.')
+		logger.close()
 
 # =====================================================================================================================================================================
 #                                                                   Functionality to validate security keys
@@ -61,18 +67,18 @@ while keep_running():
 
 
  # == PLACEHOLDER - THIS FUNCTION SHOULD BE IN MAIN - PUTTING HERE FOR TEST PURPOSES
- def testMainUNLOCK():
- 	# if header is "UNLOCK"
- 	# An "UNLOCK" message can come from an app or other machine
- 	# response = http.handlerequest_withAREsponse?
- 	user_key = PiServer_read_message_from_client(response)
- 	security_keys = PiServer_load_signed_json_file("testJSON.json")
- 	answer = PiServer_make_sure_security_key_is_valid(security_keys, user_key)
- 	if answer == "NONE":
- 		print("User has been recognised! Unlocking the door!")
- 	else:
- 		PiServer_push_message_to_client(answer + " field(s) incorrect. Please try again.")
- 
+def testMainUNLOCK():
+	# if header is "UNLOCK"
+	# An "UNLOCK" message can come from an app or other machine
+	# response = http.handlerequest_withAREsponse?
+	user_key = PiServer_read_message_from_client(response)
+	security_keys = PiServer_load_signed_json_file("testJSON.json")
+	answer = PiServer_make_sure_security_key_is_valid(security_keys, user_key)
+	if answer == "NONE":
+		print("User has been recognised! Unlocking the door!")
+	else:
+		PiServer_push_message_to_client(answer + " field(s) incorrect. Please try again.")
+
 # == PLACEHOLDER - THIS FUNCTION SHOULD BE IN MAIN - PUTTING HERE FOR TEST PURPOSES
 def testMainADDUSER():
 	# if header is "ADD USER"
@@ -136,6 +142,7 @@ def PiServer_make_sure_security_key_is_valid(security_keys, received_value):
 
 def PiServer_push_message_to_client(message):
 	# placeholder
+	print('help')
 	# this will send back a response to the user indicating which variable passed was incorrect.
 	# This will take some work on the server side to send messages
 
