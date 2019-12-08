@@ -22,7 +22,7 @@ echo "Copying server scripts to /home/pi/"
 sudo cp server.py /home/pi/server.py
 echo "Setting daemon to launch on boot..."
 sudo systemctl daemon-reload # this command actually needs to be run every time the .service file is changed
-echo "[test] Starting server... ensure some debug logs from server are seen.... if not cancel."
+echo -e "[test] Starting server...  \033[31m ensure some debug logs from server are seen now.... if not cancel.\e[0m"
 sudo systemctl start http_server
 sudo systemctl enable http_server
 sudo journalctl -u http_server.service 
