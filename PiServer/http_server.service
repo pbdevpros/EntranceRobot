@@ -3,9 +3,10 @@ Description=Launch HTTP server
 After=network.target
 
 [Service]
-ExecStart=/usr/bin/python3 /home/pi/server.py
-Restart=always
-RestartSec=10s
+ExecStart=/usr/bin/python /home/pi/server.py
+Restart=no
+Type=oneshot
+RestartSec=0s
 KillMode=process
 TimeoutSec=infinity
 
