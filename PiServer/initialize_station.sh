@@ -16,7 +16,7 @@
 # Stored in /lib/systemd/system/$filename.service - i.e. http_server.service on RasPi
 # See https://learn.sparkfun.com/tutorials/how-to-run-a-raspberry-pi-program-on-startup/all for further details...
 echo "Copying launch daemon to /lib/systemd..."
-cp http_server.service /lib/systemd/system/http_server
+cp http_server.service /lib/systemd/system/http_server.service
 sleep 2
 echo "Copying server scripts to /home/pi/"
 sudo cp server.py /home/pi/server.py
