@@ -24,7 +24,9 @@ https://www.arduino.cc/en/main/software
 
 ###### PiServer
 
-This contains the code for the local server, which can be run on any machine with Python.
+This contains the code for the local server. Operates as a HTTP server, using python, where the station can be deployed on a linux system, using BASH scripts.
+
+Validated with Raspberry Pi.
 
 ###### LabDoorOpener_V1.0.0
 
@@ -38,9 +40,17 @@ Any other files are miscellaneous test/sample files. This is an ongoing project.
 
 ## Downloading and building the project
 
-Clone project using link provided above.
+Clone project using link provided.
 
-Necessary links to build source are included above.
+``` bash
+cd PiServer 
+./initialize_station.sh # NOTE: this script includes a reboot after intallation is complete
+
+# log messages will give information on the deployment in the local filesystem
+
+```
+
+
 
 ## Contributors:
     Joseph Heady - Club President/Founder
